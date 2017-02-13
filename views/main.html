@@ -1,0 +1,388 @@
+
+
+<div id="main" class="container flex-column center" ng-controller="mainController">
+
+	<nav class="col-md-9 flex-row end">
+		<button class="btn btn-default" ng-show="form_main || form_ok" ng-click="listar()">Consultar impresiones</button>
+		<button class="btn btn-default" ng-show="lista || form_ok" ng-click="mostrar_form()">Agregar Solicitud</button>
+		<a class="btn btn-default" ng-show="lista || form_ok" download="Data_Impresiones.xls" href="#" onclick="return ExcellentExport.excel(this, 'dataExcel', 'Datos de Impresiones');">Exportar</a>
+		<button class="btn btn-default" ng-click="imprimir('datos')" ng-show="form_ok">Imprimir</button>
+	</nav>
+
+	<!-- FORMULARIO PRINCIPAL -->
+
+	<div class="panel col-xs-11 col-md-10" ng-show="form_main">
+
+		<form id="formulario_main" name="formulario_main" novalidate>
+
+			<div class="col-xs-12" style="margin-top: 30px;">
+				<div class="flex-row end">
+					<span class="costo" style="margin-right:10px;">Costo Total:</span>
+					<span class="costo" ng-bind=" costo_total | currency:('S/. ') "></span>
+				</div>
+			</div>
+
+			<div class="col-xs-12 col-md-6" ng-class="claseEspecial">
+
+				<div class="col-xs-12 titulo_container" style="margin: 30px 0px 65px 0px;">
+					<div class="flex-row center">
+						<span class="glyphicon glyphicon-user icons"></span>
+						<span class="titulo_form">Campos de usuarios</span>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label>Solicitado por</label>
+					<input type="text" class="form-control" id="solicitado" name="solicitado" ng-model="solicitado" required>
+					<div ng-show="!solicitado && formulario_main.$submitted" class="alert alert-warning" ng-bind=" 'El campo no ha sido ingresado.' "></div>
+				</div>
+
+				<div class="form-group">
+					<label>Autorizado por</label>
+					<input type="text" class="form-control" id="autorizado" name="autorizado" ng-model="autorizado" required>
+					<div ng-show="!autorizado && formulario_main.$submitted" class="alert alert-warning" ng-bind=" 'El campo no ha sido ingresado.' "></div>
+				</div>
+
+				<div class="form-group">
+					<label>Área y/o oficina</label>
+					<input type="text" class="form-control" id="area" name="area" ng-model="area" required>
+					<div ng-show="!area && formulario_main.$submitted" class="alert alert-warning" ng-bind=" 'El campo no ha sido ingresado.' "></div>
+				</div>
+
+				<div class="form-group">
+					<label>Impreso por</label>
+					<select class="form-control" id="impreso" name="impreso" ng-model="impreso" ng-change="asignar_monto()">
+						<option ng-repeat=" impreso in usuarios " value="{{impreso}}">{{impreso}}</option>
+					</select>
+					<div ng-show="!impreso && formulario_main.$submitted" class="alert alert-warning" ng-bind=" 'El campo no ha sido ingresado.' "></div>
+				</div>
+
+			</div>
+
+			<div class="col-xs-12 col-md-6" ng-class="claseEspecial">
+
+				<div class="col-xs-12 titulo_container" style="margin: 30px 0px;">
+					<div class="flex-row center">
+						<span class="glyphicon glyphicon-file icons"></span>
+						<span class="titulo_form">Campos de documento</span>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="radio-inline">
+					  <input type="radio" name="con" id="con" value="Con hoja" ng-model="hoja" ng-change="asignar_monto()"> Con hoja
+					</label>
+					<label class="radio-inline">
+					  <input type="radio" name="sin" id="sin" value="Sin hoja" ng-model="hoja" ng-change="asignar_monto()"> Sin hoja
+					</label>
+					<div ng-show="!hoja && formulario_main.$submitted" class="alert alert-warning" ng-bind=" 'El campo no ha sido selecionado.' "></div>
+				</div>
+
+				<div class="form-group">
+					<label>Tamaño</label>
+					<select class="form-control" id="tamano" name="tamano" ng-model="tamano" ng-change="asignar_monto()">
+						<option ng-repeat=" tamano in tamanos " value="{{tamano}}">{{tamano}}</option>
+					</select>
+					<div ng-show="!tamano && formulario_main.$submitted" class="alert alert-warning" ng-bind=" 'El campo no ha sido selecionado.' "></div>
+				</div>
+
+				<div class="form-group">
+					<label>Tipo de papel</label>
+					<select class="form-control" id="tipo_papel" name="tipo_papel" ng-model="papel" ng-change="asignar_monto()">
+					  <option ng-repeat=" papel in tipo_papel " value="{{papel}}">{{papel}}</option>
+					</select>
+					<div ng-show="!papel && formulario_main.$submitted" class="alert alert-warning" ng-bind=" 'El campo no ha sido selecionado.' "></div>
+				</div>
+
+				<div class="form-group">
+					<label>Tipo de impresión</label>
+					<select class="form-control" id="tipo_impresion" name="tipo_impresion" ng-model="impresion" ng-change="asignar_monto()" ng-required>
+					  <option ng-repeat=" impresion in tipo_impresion " value="{{impresion}}">{{impresion}}</option>
+					</select>
+					<div ng-show="!impresion && formulario_main.$submitted" class="alert alert-warning" ng-bind=" 'El campo no ha sido selecionado.' "></div>
+				</div>
+
+				<div class="form-group">
+					<label>Cantidad de páginas</label>
+					<input type="number" class="form-control" id="cantidad" name="cantidad" ng-model="cantidad" min="1" ng-change="asignar_monto()" required>
+					<div ng-show="!cantidad && formulario_main.$submitted" class="alert alert-warning" ng-bind=" 'El campo no ha sido ingresado.' "></div>
+				</div>
+				
+				<div class="form-group">
+					<a href="" ng-click="habilitar_campos()" style="text-decoration: none;" ng-hide="agregar_campos">Agregar campos</a>
+				</div>
+			</div>
+
+			<div class="col-xs-12 col-md-4" ng-show="agregar_campos" ng-class="claseEspecial">
+
+				<div class="col-xs-12 titulo_container" style="margin: 30px 0px;">
+					<div class="flex-row center">
+						<span class="glyphicon glyphicon-file icons"></span>
+						<span class="titulo_form">Campos de documento</span>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="radio-inline">
+					  <input type="radio" name="con2" id="con2" value="Con hoja" ng-model="hoja2" ng-change="asignar_monto()"> Con hoja
+					</label>
+					<label class="radio-inline">
+					  <input type="radio" name="sin2" id="sin2" value="Sin hoja" ng-model="hoja2" ng-change="asignar_monto()"> Sin hoja
+					</label>
+					<div ng-show="!hoja2 && formulario_main.$submitted" class="alert alert-warning" ng-bind=" 'El campo no ha sido selecionado.' "></div>
+				</div>
+
+				<div class="form-group">
+					<label>Tamaño</label>
+					<select class="form-control" id="tamano2" name="tamano2" ng-model="tamano2" ng-change="asignar_monto()">
+						<option ng-repeat=" tamano2 in tamanos " value="{{tamano2}}">{{tamano2}}</option>
+					</select>
+					<div ng-show="!tamano2 && formulario_main.$submitted" class="alert alert-warning" ng-bind=" 'El campo no ha sido selecionado.' "></div>
+				</div>
+
+				<div class="form-group">
+					<label>Tipo de papel</label>
+					<select class="form-control" id="tipo_papel2" name="tipo_papel2" ng-model="papel2" ng-change="asignar_monto()">
+					  <option ng-repeat=" papel2 in tipo_papel " value="{{papel2}}">{{papel2}}</option>
+					</select>
+					<div ng-show="!papel2 && formulario_main.$submitted" class="alert alert-warning" ng-bind=" 'El campo no ha sido selecionado.' "></div>
+				</div>
+
+				<div class="form-group">
+					<label>Tipo de impresión</label>
+					<select class="form-control" id="tipo_impresion2" name="tipo_impresion2" ng-model="impresion2" ng-change="asignar_monto()" ng-required>
+					  <option ng-repeat=" impresion2 in tipo_impresion " value="{{impresion2}}">{{impresion2}}</option>
+					</select>
+					<div ng-show="!impresion2 && formulario_main.$submitted" class="alert alert-warning" ng-bind=" 'El campo no ha sido selecionado.' "></div>
+				</div>
+
+				<div class="form-group">
+					<label>Cantidad de páginas</label>
+					<input type="number" class="form-control" id="cantidad2" name="cantidad2" ng-model="cantidad2" ng-change="asignar_monto()" min="0" required>
+					<div ng-show="!cantidad2 && formulario_main.$submitted" class="alert alert-warning" ng-bind=" 'El campo no ha sido ingresado.' "></div>
+				</div>
+				
+			</div>
+
+			<div class="col-xs-12 flex-row end">
+				<div class="form-group" style="margin-right: 5px;">
+					<input type="submit" class="btn btn-default" value="Limpiar" ng-click="limpiar()"/>
+				</div>
+				<div class="form-group">
+					<input type="submit" class="btn btn-primary" value="Registrar" ng-click="registrar()"/>
+				</div>
+			</div>
+
+		</form>
+
+	</div>
+
+	<!-- END FORMULARIO PRINCIPAL -->
+
+
+	<!-- DATOS SATISFACTORIOS -->
+
+	<div class="panel col-xs-11 col-sm-9" ng-show="form_ok">
+
+		<div id="datos" class="col-md-6 col-md-offset-3">
+			<div class="flex-row center">
+				<h2>Solicitud de Impresión</h2>
+			</div>
+			<div class="table-responsive">
+				<table class="table table-condensed">
+					<tbody>
+						<tr class="active">
+							<td class="text-center negritas" ng-bind=" 'Orden Nº: ' "></td>
+							<td id="id_solicitud" class="negritas" ng-repeat="item in data2">
+								{{ item.id }}
+							</td>
+						</tr>
+						<tr>
+							<td class="text-center negritas" ng-bind=" 'Solicitado por: ' "></td>
+							<td class="negritas" ng-bind=" solicitado "></td>
+						</tr>
+						<tr class="active">
+							<td><p class="text-center negritas" ng-bind=" 'Autorizado por: ' "></p></td>
+							<td><p class="negritas" ng-bind=" autorizado "></p></td>
+						</tr>
+						<tr>
+							<td><p class="text-center negritas" ng-bind=" 'Área y/o oficina: ' "></p></td>
+							<td><p class="negritas" ng-bind=" area "></p></td>
+						</tr>
+						<tr class="active">
+							<td><p class="text-center negritas" ng-bind=" 'Impreso por: ' "></p></td>
+							<td><p class="negritas" ng-bind=" impreso "></p></td>
+						</tr>
+						<tr>
+							<td><p class="text-center negritas" ng-bind=" 'Tipo de solicitud: ' "></p></td>
+							<td><p class="negritas" ng-bind=" hoja "></p></td>
+						</tr>
+						<tr class="active">
+							<td><p class="text-center negritas" ng-bind=" 'Tamaño: ' "></p></td>
+							<td><p class="negritas" ng-bind=" tamano "></p></td>
+						</tr>
+						<tr>
+							<td><p class="text-center negritas" ng-bind=" 'Tipo de papel: ' "></p></td>
+							<td><p class="negritas" ng-bind=" papel "></p></td>
+						</tr>
+						<tr class="active">
+							<td><p class="text-center negritas" ng-bind=" 'Tipo de impresión: ' "></p></td>
+							<td><p class="negritas" ng-bind=" impresion "></p></td>
+						</tr>
+						<tr>
+							<td><p class="text-center negritas" ng-bind=" 'Cantidad de páginas: ' "></p></td>
+							<td><p class="negritas" ng-bind=" cantidad "></p></td>
+						</tr>
+						<tr class="active" ng-show="agregar_campos">
+							<td><p class="text-center negritas" ng-bind=" 'Tipo de solicitud: ' "></p></td>
+							<td><p class="negritas" ng-bind=" hoja2 "></p></td>
+						</tr>
+						<tr ng-show="agregar_campos">
+							<td><p class="text-center negritas" ng-bind=" 'Tamaño: ' "></p></td>
+							<td><p class="negritas" ng-bind=" tamano2 "></p></td>
+						</tr>
+						<tr class="active" ng-show="agregar_campos">
+							<td><p class="text-center negritas" ng-bind=" 'Tipo de papel: ' "></p></td>
+							<td><p class="negritas" ng-bind=" papel2 "></p></td>
+						</tr>
+						<tr ng-show="agregar_campos">
+							<td><p class="text-center negritas" ng-bind=" 'Tipo de impresión: ' "></p></td>
+							<td><p class="negritas" ng-bind=" impresion2 "></p></td>
+						</tr>
+						<tr class="active" ng-show="agregar_campos">
+							<td><p class="text-center negritas" ng-bind=" 'Cantidad de páginas: ' "></p></td>
+							<td><p class="negritas" ng-bind=" cantidad2 "></p></td>
+						</tr>
+						<tr>
+							<td><p class="text-center negritas" ng-bind=" 'Costo Total: ' "></p></td>
+							<td><p class="negritas" ng-bind=" costo_total | currency:('S/. ') "></p></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+	</div>
+
+	<!-- END DATOS SATISFACTORIOS -->
+
+
+	<!-- LISTADO -->
+
+	<div class="panel col-md-12" ng-show="lista" ng-cloak>
+		<div id="lista" class="">
+			<div class="flex-row center">
+				<h2>Listado de Impresiones</h2>
+			</div>
+			<div class="row buscar">
+				<div class="col-md-3">
+				    <div class="input-group">
+					  <span class="input-group-addon">
+					  	<i class="glyphicon glyphicon-search"></i>
+					  </span>
+					  <input type="text" class="form-control" placeholder="Buscar" ng-pagination-search="data">
+					</div>
+				</div>
+			</div>
+			<div class="table-responsive">
+				<table class="table table-condensed">
+				    <thead>
+				      <tr>
+				        <th class="info text-center negritas">ID</th>
+				        <th class="info text-center negritas">Solicitante</th>
+				        <th class="info text-center negritas">Área y/o oficina</th>
+				        <th class="info text-center negritas">Responsable de impresión</th>
+				        <th class="info text-center negritas">Cant. de páginas</th>
+				        <th class="info text-center negritas">Tamaño</th>
+				        <th class="info text-center negritas">Tipo de impresión</th>
+				        <th class="info text-center negritas">Costo</th>
+				        <th class="info text-center negritas">Fecha</th>
+				        <th class="info text-center negritas">Hora</th>
+				      </tr>
+				    </thead>
+					<tbody>
+						<tr ng-pagination="datos in data | orderBy:'-hora_registro' | orderBy:'-fecha_registro' |filter:buscar" ng-pagination-size="10">
+							<div class="flex-row center precarga" ng-hide="data">
+								<i class="fa fa-refresh fa-spin fa-5x"></i>
+							</div>
+							<td class="text-center" ng-bind=" datos.id "></td>
+							<td class="text-center" ng-bind=" datos.solicitado "></td>
+							<td class="text-center" ng-bind=" datos.area_oficina "></td>
+							<td class="text-center" ng-bind=" datos.responsable_impresion "></td>
+							<td class="text-center" ng-bind=" datos.cantidad_paginas "></td>
+							<td class="text-center" ng-bind=" datos.tamano "></td>
+							<td class="text-center" ng-bind=" datos.tipo_impresion "></td>
+							<td class="text-center" ng-bind=" datos.costo_total | currency:('S/.')"></td>
+							<td class="text-center" ng-bind=" datos.fecha_registro "></td>
+							<td class="text-center" ng-bind=" datos.hora_registro "></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<ng-pagination-control pagination-id="data"></ng-pagination-control>
+		</div>
+	</div>
+
+	<!-- END LISTADO -->
+
+	<!-- EXPORTAR EN EXCEL -->
+
+	<div id="dataExcel" class="panel col-md-12 ocultar" ng-cloak>
+		<div class="flex-column center">
+			<h2>Datos Completos de las Solicitudes de Impresión</h2>
+		</div>
+
+		<table class="table table-condensed">
+			<thead>
+				<tr style="background-color: #B2D0E9;">
+				   	<th class="info text-center negritas">ID</th>
+				    <th class="info text-center negritas">Solicitante</th>
+				    <th class="info text-center negritas">Autorizado</th>
+				    <th class="info text-center negritas">Área y/o oficina</th>
+				    <th class="info text-center negritas">Responsable de impresión</th>
+
+				    <th class="info text-center negritas">Tipo de hoja</th>
+				    <th class="info text-center negritas">Tamaño</th>
+				    <th class="info text-center negritas">Tipo de papel</th>
+				    <th class="info text-center negritas">Tipo de impresión</th>
+				    <th class="info text-center negritas">Cant. de páginas</th>
+
+				    <th class="info text-center negritas">Tipo de hoja</th>
+				    <th class="info text-center negritas">Tamaño</th>
+				    <th class="info text-center negritas">Tipo de papel</th>
+				    <th class="info text-center negritas">Tipo de impresión</th>
+				    <th class="info text-center negritas">Cant. de páginas</th>
+
+				    <th class="info text-center negritas">Costo (S/.)</th>
+				    <th class="info text-center negritas">Fecha de registro</th>
+				    <th class="info text-center negritas">Hora de registro</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="item in data">
+					<td>{{ item.id }}</td>
+					<td>{{ item.solicitado }}</td>
+					<td>{{ item.autorizado }}</td>
+					<td>{{ item.area_oficina }}</td>
+					<td>{{ item.responsable_impresion }}</td>
+					<td>{{ item.hoja }}</td>
+					<td>{{ item.tamano }}</td>
+					<td>{{ item.tipo_papel }}</td>
+					<td>{{ item.tipo_impresion }}</td>
+					<td>{{ item.cantidad_paginas }}</td>
+					<td>{{ item.hoja2 }}</td>
+					<td>{{ item.tamano2 }}</td>
+					<td>{{ item.tipo_papel2 }}</td>
+					<td>{{ item.tipo_impresion2 }}</td>
+					<td>{{ item.cantidad_paginas2 }}</td>
+					<td>{{ item.costo_total }}</td>
+					<td>{{ item.fecha_registro }}</td>
+					<td>{{ item.hora_registro }}</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<!-- END EXPORTAR EN EXCEL -->
+
+</div>

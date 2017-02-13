@@ -1,0 +1,35 @@
+
+
+<div class="container flex-row center" ng-controller="loginController">
+	<div class="panel col-xs-11 col-sm-5" ng-hide="valido">
+
+		<form id="formulario_login" name="formulario_login" novalidate>
+
+			<h2 class="text-center">Login</h2>
+
+			<div class="form-group">
+				<label>Usuario</label>
+				<input type="text" class="form-control" id="usuario" name="usuario" ng-model="usuario" required>
+				<div ng-show="!usuario && formulario_login.$submitted" class="alert alert-warning" ng-bind=" 'El usuario no ha sido ingresado.' "></div>
+			</div>
+
+			<div class="form-group">
+				<label>Contraseña</label>
+				<input type="password" class="form-control" id="password" name="password" ng-model="password" required>
+				<div ng-show="!password && formulario_login.$submitted" class="alert alert-warning" ng-bind=" 'La contraseña no ha sido ingresada.' "></div>
+			</div>
+
+			<div ng-show="invalido" class="alert alert-danger" ng-bind=" 'Los datos ingresados no son válidos.' "></div>
+
+			<div class="flex-row center precarga" ng-show="formulario_login.$submitted && !invalido">
+				<i class="fa fa-refresh fa-spin fa-2x"></i>
+			</div>
+
+			<div class="form-group flex-row center">
+				<input type="submit" class="btn btn-primary col-md-6" value="Ingresar" ng-click="validar_login()"/>
+			</div>
+
+		</form>
+
+	</div>
+</div>

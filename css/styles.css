@@ -1,0 +1,128 @@
+html, body {
+	background-image: url(../img/az_subtle.png);
+}
+header {
+	margin-top: 20px;
+	margin-bottom: 10px;
+	font-family: 'Raleway', sans-serif;
+}
+
+h2 , label , #datos{
+	font-family: 'Raleway', sans-serif;
+}
+
+h1 {
+	margin-top: 30px;
+	font-family: 'Montserrat', sans-serif;
+}
+
+span {
+	margin: 0px;
+	padding: 0px;
+}
+
+h2 {
+	margin: 20px 0px; 
+}
+
+.negritas {
+	font-weight: bold;
+}
+
+.fila {
+	display: flex;
+	justify-content:space-between;
+	align-items:center;
+}
+
+.center {
+	justify-content:center;
+	align-items:center;
+}
+
+.flex-row {
+	display: flex;
+	flex-direction: row;
+}
+
+.flex-column {
+	display: flex;
+	flex-direction: column;
+}
+
+.end {
+	justify-content: flex-end;
+	align-items: center;
+}
+
+nav button , nav a {
+	margin: 5px 5px;
+}
+
+#back {
+	margin: 15px 5px;
+}
+
+.invisible {
+	color: transparent;
+}
+
+.ocultar {
+	display: none;
+}
+
+.buscar{
+	margin-bottom: 10px;
+}
+
+.panel {
+	margin-top: 20px;
+	border-radius: 5px;
+    -webkit-box-shadow: 5px 4px 28px -5px rgba(0,0,0,0.75);
+    -moz-box-shadow: 5px 4px 28px -5px rgba(0,0,0,0.75);
+    box-shadow: 5px 4px 28px -5px rgba(0,0,0,0.75);
+}
+
+#main {
+	display: none;
+}
+
+.login , .main {
+	background-color: #fff;
+}
+
+.costo {
+	font-family: 'Raleway', sans-serif;
+	font-size: 1.6rem;
+	font-weight: bold;
+}
+
+.titulo_form {
+	font-family: 'Raleway', sans-serif;
+	font-weight: bold;
+	font-size: 1.8rem;
+}
+
+.icons {
+	font-size: 1.8rem;
+	margin-right: 10px;
+}
+
+.titulo_container {
+	background-color: #A6CFDE;
+	border-radius: 5px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+body {
+	display: none;
+}
+
+.logo_principal {
+	margin-left: 20px;
+}
+
+.precarga {
+	margin: 10px;
+}
